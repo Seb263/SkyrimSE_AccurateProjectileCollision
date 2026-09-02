@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMMNOSOUND
+#define NOMINMAX
 
 #include <unordered_set>
 #include <shared_mutex>
@@ -14,14 +15,10 @@
 
 #include <spdlog/sinks/basic_file_sink.h>
 
-#include <ClibUtil/distribution.hpp>
-#include <ClibUtil/editorID.hpp>
-#include <ClibUtil/numeric.hpp>
-#include <ClibUtil/rng.hpp>
-#include <ClibUtil/simpleINI.hpp>
-
+#include <SimpleIni.h>
 #include <magic_enum.hpp>
-#include <SimpleMath.h>
+
+#include "re-fmt.h"
 
 #include "Utils/Debug.hpp"
 
@@ -48,7 +45,12 @@ namespace stl
 	void write_vfunc()
 	{
 		REL::Relocation<std::uintptr_t> vtbl{ F::VTABLE[offset] };
-		T::func = vtbl.write_vfunc(T::idx, T::thunk);
+
+		if constexpr (requires { T::idx(); }) {
+			T::func = vtbl.write_vfunc(T::idx(), T::thunk);
+		} else {
+			T::func = vtbl.write_vfunc(T::idx, T::thunk);
+		}
 	}
 
 	template <class F, class T>

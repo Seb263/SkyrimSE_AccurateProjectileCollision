@@ -1,4 +1,14 @@
 [Bb]uild/
+[Oo]ut/
+vs*/
+
 .vs/
 .vscode/
-CMakeUserPresets.json
+.xmake/
+.cache/
+.idea/
+
+/*.bat
+/*.zip
+/*.7z
+/*.rar
